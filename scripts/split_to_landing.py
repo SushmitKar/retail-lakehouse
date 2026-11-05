@@ -4,7 +4,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 RAW = ROOT / "data" / "raw" / "transaction_data.csv"
-LANDING = ROOT / "data" / "landing"
+LANDING = ROOT / "data" / "landing" / "transactions"
 LANDING.mkdir(parents=True, exist_ok=True)
 
 START_DATE = date(2024,1,1)
