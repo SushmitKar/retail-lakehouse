@@ -19,7 +19,7 @@ def get_spark():
     )
     return configure_spark_with_delta_pip(builder).getOrCreate()
 
-def load_day(spark, file_path):
+def load_day(spark, file_path, bronze_path=BRONZE):
     file_date = file_path.stem.replace("transactions_", "")     # "2024-01-01"
 
     df = (
@@ -32,7 +32,7 @@ def load_day(spark, file_path):
         .mode("overwrite")
         .option("replaceWhere", f"_file_date = '{file_date}'")
         .partitionBy("_file_date")
-        .save(BRONZE)
+        .save(bronze_path)
     )
     return df.count()
 
