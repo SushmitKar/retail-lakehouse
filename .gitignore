@@ -7,3 +7,4 @@ env
 .db
 .sql
 temp.py
+scripts/peek_silver.ipynb
