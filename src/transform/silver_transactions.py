@@ -88,7 +88,6 @@ if __name__ == "__main__":
     for d in dates:
         b, s, q = build_day(spark, d)
         assert b == s + q, f"{d}: bronze {b} != silver {s} + quarantine {q}"
-        assert b == s + q, f"{d}: bronze {b} != silver {s} + quarantine {q}"
         print(f"{d}: bronze {b:,} = silver {s:,} + quarantine {q:,}")
     print("All days reconciled.")
 
