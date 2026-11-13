@@ -26,9 +26,9 @@ def typed(name):
 
 def add_reason(df):
     """Add quarantine reason - a label for rows to reject, null rows to keep."""
-    bad_type = F.lit(False)
+    bad_type = F.lit(False) # No invalid types yet.
     for c in REQUIRED:
-        bad_type = bad_type | typed(c).isNull()
+        bad_type = bad_type | typed(c).isNull() ## True if any required column failed to convert.
     qty_zero = typed("quantity") == 0
     sales_zero = typed("sales_value") == 0
     return df.withColumn(
