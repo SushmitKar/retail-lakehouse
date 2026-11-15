@@ -9,7 +9,6 @@ Runs one day at a time. Rerunning a day replaces that day only.
 Run from the project root: python -m src.transform.silver_transactions [days]
 """
 import sys
-
 from pyspark.sql import functions as F
 from src.ingestion.load_bronze import BRONZE, ROOT, get_spark
 
