@@ -1,0 +1,40 @@
+version: 2
+
+models:
+  - name: dim_product
+    columns:
+      - name: product_id
+        tests:
+          - unique
+          - not_null
+
+  - name: dim_household
+    columns:
+      - name: household_key
+        tests: [unique, not_null]
+
+  - name: dim_date
+    columns:
+      - name: day
+        tests: [unique, not_null]
+
+  - name: fact_sales
+    columns:
+      - name: product_id
+        tests:
+          - relationships:
+              arguments:
+                to: ref('dim_product')
+                field: product_id
+      - name: household_key
+        tests:
+          - relationships:
+              arguments:
+                to: ref('dim_household')
+                field: household_key
+      - name: day
+        tests:
+          - relationships:
+              arguments:
+                to: ref('dim_date')
+                field: day

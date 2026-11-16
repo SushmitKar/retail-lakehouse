@@ -1,0 +1,16 @@
+version: 2
+
+sources:
+  - name: silver
+    tables:
+      - name: product
+        meta:
+          external_location: "delta_scan('../data/lake/silver/product')"
+
+      - name: hh_demographic
+        meta:
+          external_location: "delta_scan('../data/lake/silver/hh_demographic')"
+
+      - name: transactions
+        meta:
+          external_location: "delta_scan('../data/lake/silver/transactions')"
