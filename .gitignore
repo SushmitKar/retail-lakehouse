@@ -19,6 +19,7 @@ derby.log
 dbt/lakehouse.duckdb
 dbt/target/
 dbt/logs/
+dbt/.user.yml
 logs/
 
 # Database
