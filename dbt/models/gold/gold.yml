@@ -38,3 +38,20 @@ models:
               arguments:
                 to: ref('dim_date')
                 field: day
+
+  - name: household_trend
+    columns:
+      - name: household_key
+        tests: [unique, not_null]
+      - name: trend
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['new', 'lapsed', 'spending_more', 'spending_less', 'flat']
+
+  - name: category_trend
+    columns:
+      - name: trend
+        tests: [not_null]
+      - name: department
+        tests: [not_null]
