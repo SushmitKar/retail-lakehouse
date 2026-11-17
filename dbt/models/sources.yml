@@ -14,3 +14,11 @@ sources:
       - name: transactions
         meta:
           external_location: "delta_scan('../data/lake/silver/transactions')"
+
+      - name: campaign_table
+        meta:
+          external_location: "delta_scan('../data/lake/silver/campaign_table')"
+
+      - name: campaign_desc
+        meta:
+          external_location: "delta_scan('../data/lake/silver/campaign_desc')"
