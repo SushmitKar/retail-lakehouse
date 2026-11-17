@@ -1,5 +1,5 @@
 """
-Build silver for the 7 reference tables from bronze, driven by one config.
+Build silver for the 6reference tables from bronze, driven by one config.
 Input:  data/lake/bronze/<table>
 Output: data/lake/silver/<table>      (typed, clean rows)
         data/lake/quarantine/<table>  (rejected rows, kept as raw text, plus a reason)
@@ -38,9 +38,6 @@ CONFIG = {
     "coupon": {"long": ["coupon_upc", "product_id", "campaign"],
                "key": ["coupon_upc", "product_id", "campaign"],
                "dupes": "copies"},
-    "causal_data": {"long": ["product_id", "store_id", "week_no"],
-                    "key": ["product_id", "store_id", "week_no"],
-                    "dupes": "conflict"},
 }
 
 def typed(name):

@@ -18,7 +18,6 @@ EXPECTED = {
     "coupon_redempt": 2_318,
     "hh_demographic": 801,
     "product": 92_353,
-    "causal_data": 36_786_524
 }
 
 def load_table(spark, name):
