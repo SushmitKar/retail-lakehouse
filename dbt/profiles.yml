@@ -6,3 +6,6 @@ retail_lakehouse:
       path: lakehouse.duckdb
       extensions:
         - delta
+        - azure
+      settings:
+        azure_storage_connection_string: "AccountName={{ env_var('AZURE_STORAGE_ACCOUNT') }};AccountKey={{ env_var('AZURE_STORAGE_KEY') }};EndpointSuffix=core.windows.net"

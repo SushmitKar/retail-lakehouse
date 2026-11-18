@@ -10,10 +10,10 @@ Run from the project root: python -m src.transform.silver_transactions [days]
 """
 import sys
 from pyspark.sql import functions as F
-from src.ingestion.load_bronze import BRONZE, ROOT, get_spark
+from src.ingestion.load_bronze import BRONZE, get_spark, lake_root
 
-SILVER = (ROOT / "data" / "lake" / "silver" / "transactions").as_posix()
-QUARANTINE = (ROOT / "data" / "lake" / "quarantine" / "transactions").as_posix()
+SILVER = f"{lake_root()}/silver/transactions"
+QUARANTINE = f"{lake_root()}/quarantine/transactions"
 
 LONG_COLS = ["household_key", "basket_id", "day", "product_id", "quantity", "store_id", "week_no"]
 DOUBLE_COLS = ["sales_value", "retail_disc", "coupon_disc", "coupon_match_disc"]
