@@ -1,3 +1,5 @@
+![CI](https://github.com/SushmitKar/retail-lakehouse/actions/workflows/ci.yml/badge.svg)
+
 # Retail Lakehouse: a daily sales pipeline (bronze → silver → gold)
 
 A batch data pipeline that loads daily retail sales files safely (reruns never create duplicates, bad rows are quarantined, not deleted) and builds analysis-ready tables to answer customer-behaviour questions.
@@ -156,13 +158,13 @@ Average two-year spend per household. These are links, not causes (income and ho
 
 ## Limits
 
-- **2.6M rows is small for Spark.** I used Spark to practise the production tools. For this size DuckDB or Postgres would be enough, and I would choose them for a real project of this size.
+- **2.6M rows is small for SparkIs.** I used Spark to practise the production tools. For this size DuckDB or Postgres would be enough, and I would choose them for a real project of this size.
 - The households are frequent shoppers, so results may not apply to casual customers.
 - Only 32% of households have demographics, and they may not represent all shoppers.
 - Campaign windows can overlap when campaigns run back to back, so some "before" days belong to an earlier campaign.
 - Spending trend compares two halves, so one large shop can move a household's label.
 - The DAY to date mapping is an assumption.
-- Not done yet: Docker, CI, and cloud storage.
+- Not done yet: Docker and cloud storage.
 
 ## How to run
 
