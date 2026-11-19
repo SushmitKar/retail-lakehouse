@@ -8,11 +8,12 @@ Each table is a full snapshot, so each run replaces the whole table.
 import sys
 from pyspark.sql import Window
 from pyspark.sql import functions as F
-from src.ingestion.load_bronze import ROOT, get_spark
+from src.ingestion.load_bronze import get_spark, lake_root
 
-BRONZE_DIR = ROOT/"data"/"lake"/"bronze"
-SILVER_DIR = ROOT / "data" / "lake" / "silver"
-QUARANTINE_DIR = ROOT / "data" / "lake" / "quarantine"
+LAKE = lake_root()
+BRONZE_DIR = f"{LAKE}/bronze"
+SILVER_DIR = f"{LAKE}/silver"
+QUARANTINE_DIR = f"{LAKE}/quarantine"
 
 # long       = columns cast to whole numbers (a failed cast sends the row to quarantine)
 # key        = columns that identify one row
@@ -89,12 +90,12 @@ def write_table(df, path):
 def build_table(spark, name):
     """Build silver and quarantine for one table; return (bronze, silver, quarantine) counts."""
     cfg = CONFIG[name]
-    raw = spark.read.format("delta").load((BRONZE_DIR/name).as_posix())
+    raw = spark.read.format("delta").load(f"{BRONZE_DIR}/{name}")
     raw = raw.toDF(*[c.lower() for c in raw.columns])   ## lower-case all columns
     flagged = add_reason(raw, cfg)
 
-    silver_path = (SILVER_DIR/name).as_posix()
-    quarantine_path = (QUARANTINE_DIR/name).as_posix()
+    silver_path = f"{SILVER_DIR}/{name}"
+    quarantine_path = f"{QUARANTINE_DIR}/{name}"
     write_table(to_silver(flagged.filter(F.col("quarantine_reason").isNull()), cfg), silver_path)
     write_table(flagged.filter(F.col("quarantine_reason").isNotNull()), quarantine_path)
 

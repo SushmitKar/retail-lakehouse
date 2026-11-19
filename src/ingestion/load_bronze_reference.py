@@ -6,10 +6,10 @@ Unlike transactions, these arrive as one snapshot, so each load replaces the
 whole table. Rerunning gives the same result.
 Run from the project root: python -m src.ingestion.load_bronze_reference
 """
-from src.ingestion.load_bronze import ROOT, get_spark
+from src.ingestion.load_bronze import ROOT, get_spark, lake_root
 
 RAW = ROOT/"data"/"raw"
-BRONZE_DIR = ROOT/"data"/"lake"/"bronze"
+BRONZE_DIR = f"{lake_root()}/bronze"
 
 EXPECTED = {
     "campaign_desc" : 30,
@@ -22,7 +22,7 @@ EXPECTED = {
 
 def load_table(spark, name):
     """Load one raw CSV into its bronze Delta table (all text); return the row count."""
-    target = (BRONZE_DIR / name).as_posix()
+    target = f"{BRONZE_DIR}/{name}"
     df = spark.read.option("header", True).csv((RAW / f"{name}.csv").as_posix())
     df.write.format("delta").mode("overwrite").save(target)
     return spark.read.format("delta").load(target).count()

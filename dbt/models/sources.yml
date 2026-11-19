@@ -5,20 +5,20 @@ sources:
     tables:
       - name: product
         meta:
-          external_location: "delta_scan('../data/lake/silver/product')"
+          external_location: "delta_scan('abfss://lake@{{ env_var('AZURE_STORAGE_ACCOUNT') }}.dfs.core.windows.net/silver/product')"
 
       - name: hh_demographic
         meta:
-          external_location: "delta_scan('../data/lake/silver/hh_demographic')"
+          external_location: "delta_scan('abfss://lake@{{ env_var('AZURE_STORAGE_ACCOUNT') }}.dfs.core.windows.net/silver/hh_demographic')"
 
       - name: transactions
         meta:
-          external_location: "delta_scan('../data/lake/silver/transactions')"
+          external_location: "delta_scan('abfss://lake@{{ env_var('AZURE_STORAGE_ACCOUNT') }}.dfs.core.windows.net/silver/transactions')"
 
       - name: campaign_table
         meta:
-          external_location: "delta_scan('../data/lake/silver/campaign_table')"
+          external_location: "delta_scan('abfss://lake@{{ env_var('AZURE_STORAGE_ACCOUNT') }}.dfs.core.windows.net/silver/campaign_table')"
 
       - name: campaign_desc
         meta:
-          external_location: "delta_scan('../data/lake/silver/campaign_desc')"
+          external_location: "delta_scan('abfss://lake@{{ env_var('AZURE_STORAGE_ACCOUNT') }}.dfs.core.windows.net/silver/campaign_desc')"
