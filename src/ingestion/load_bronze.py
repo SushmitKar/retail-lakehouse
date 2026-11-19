@@ -34,9 +34,8 @@ def get_spark():
         builder = builder.config(
             f"spark.hadoop.fs.azure.account.key.{account}.dfs.core.windows.net", key
         )
-    return configure_spark_with_delta_pip(
-        builder, extra_packages=["org.apache.hadoop:hadoop-azure:3.3.4"]
-    ).getOrCreate()
+    packages = ["org.apache.hadoop:hadoop-azure:3.3.4"] if (account and key) else []    ## CI ignores this as it doesnt connect to ADLS; it doesnt download Azure jar.
+    return configure_spark_with_delta_pip(builder, extra_packages=packages).getOrCreate()
 
 def load_day(spark, file_path, bronze_path=BRONZE):
     file_date = file_path.stem.replace("transactions_", "")     # "2024-01-01"
