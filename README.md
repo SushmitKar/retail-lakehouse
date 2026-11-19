@@ -4,8 +4,7 @@
 
 A batch data pipeline that loads daily retail sales files safely (reruns never create duplicates, bad rows are quarantined, not deleted) and builds analysis-ready tables to answer customer-behaviour questions.
 
-**Stack:** PySpark + Delta Lake (bronze, silver), dbt + DuckDB (gold), pytest (tests).
-
+**Stack:** PySpark + Delta Lake (bronze, silver), dbt + DuckDB (gold), Azure Data Lake Storage Gen2 (storage), pytest + GitHub Actions (tests).
 ## Architecture
 
 ```mermaid
@@ -24,6 +23,8 @@ flowchart LR
 | Bronze | Raw data, all columns as text, partitioned by day | PySpark, Delta |
 | Silver | Typed, cleaned rows. Rejected rows go to quarantine with a reason | PySpark, Delta |
 | Gold | Star schema plus question tables, with tests | dbt, DuckDB |
+| Storage | All layers can live on Azure Data Lake Storage Gen2 (or locally) | ADLS Gen2 |
+
 
 ## Data
 
@@ -149,7 +150,7 @@ Average two-year spend per household. These are links, not causes (income and ho
 | **SCD2 skipped** | The source has no history, so there is nothing to track. Faking it would be decoration |
 | **`causal_data` excluded** | See below |
 | Money kept as `double` | Simple, but `DECIMAL` is safer for real money |
-
+| Account key for Azure login | Simplest option for a personal project. Managed identity or Key Vault would be the production choice |
 **Why `causal_data` (36.8M rows) was dropped:**
 - It lists only promoted product-weeks, so it has no baseline of its own.
 - 15,245 product-store-weeks appear twice with different values, and I could not tell which was true.
@@ -158,13 +159,29 @@ Average two-year spend per household. These are links, not causes (income and ho
 
 ## Limits
 
-- **2.6M rows is small for SparkIs.** I used Spark to practise the production tools. For this size DuckDB or Postgres would be enough, and I would choose them for a real project of this size.
+- **2.6M rows is small for Spark.** I used Spark to practise the production tools. For this size DuckDB or Postgres would be enough, and I would choose them for a real project of this size.
 - The households are frequent shoppers, so results may not apply to casual customers.
 - Only 32% of households have demographics, and they may not represent all shoppers.
 - Campaign windows can overlap when campaigns run back to back, so some "before" days belong to an earlier campaign.
 - Spending trend compares two halves, so one large shop can move a household's label.
 - The DAY to date mapping is an assumption.
-- Not done yet: Docker and cloud storage.
+- Azure login uses a storage account key. It gives full access, so it is fine for a personal project. Managed identity is the production way.
+- CI runs only the pytest suite, on local temporary paths. It does not test the Azure path, and dbt tests run locally only.
+- Compute (Spark, DuckDB) runs on locally. Only storage is in Azure. No orchestration, Key Vault or Terraform.
+- Not done yet: Docker.
+
+## Running on Azure (optional)
+
+Create a `.env` file in the project root (ensure it is in .gitignore):
+
+    AZURE_STORAGE_ACCOUNT=<your storage account name>
+    AZURE_STORAGE_KEY=<your access key>
+
+With these set, bronze, silver, quarantine and gold read and write the `lake` container on ADLS Gen2. Without them, everything runs locally under `data/lake`. `python -m scripts.test_adls` checks the connection.
+
+For dbt, load the variables into your shell first (dbt does not read `.env`). In PowerShell:
+
+    Get-Content ..\.env | ForEach-Object { $n,$v = $_ -split '=',2; Set-Item "env:$n" $v }
 
 ## How to run
 
@@ -172,6 +189,7 @@ Requirements: Python 3.11, Java 17. On Windows, Spark also needs `HADOOP_HOME` w
 
 ```bash
 pip install -r requirements.txt
+# optional: create .env to use Azure (see "Running on Azure")
 
 # put the 8 dunnhumby CSVs in data/raw/
 python scripts/split_to_landing.py
